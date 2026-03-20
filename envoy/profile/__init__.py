@@ -1,0 +1,1 @@
+"""Profile management - loading and retrieval from ChromaDB."""
