@@ -1,4 +1,4 @@
-# envoy
+# hireme(pls)AI
 
 Autonomous internship/co-op application agent. Discovers job listings, scores fit, generates tailored resumes, and submits applications on your behalf.
 
