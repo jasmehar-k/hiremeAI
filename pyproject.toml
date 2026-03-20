@@ -3,7 +3,7 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "envoy"
+name = "hireme"
 version = "0.1.0"
 description = "Autonomous internship/co-op application agent"
 readme = "README.md"
@@ -47,12 +47,12 @@ dev = [
 ]
 
 [project.scripts]
-envoy = "envoy.graph:main"
-envoy-schedule = "envoy.scheduler:main"
+hireme = "hiremeAI.graph:main"
+hireme-schedule = "hiremeAI.scheduler:main"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["envoy*"]
+include = ["hiremeAI*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -5,8 +5,8 @@ from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
-from envoy import config
-from envoy.nodes.filter import GraphState
+from hiremeAI import config
+from hiremeAI.nodes.filter import GraphState
 
 
 def get_jinja_env() -> Environment:

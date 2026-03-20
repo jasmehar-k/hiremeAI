@@ -9,9 +9,9 @@ from typing import TypedDict
 
 from playwright.async_api import async_playwright, Page, Browser, Error as PlaywrightError
 
-from envoy import config
-from envoy.nodes.filter import GraphState
-from envoy import tracker
+from hiremeAI import config
+from hiremeAI.nodes.filter import GraphState
+from hiremeAI import tracker
 
 
 class FormField(TypedDict):
@@ -28,7 +28,7 @@ async def get_browser() -> Browser:
     return await playwright.chromium.launch(headless=config.HEADLESS)
 
 
-def detect_portal_type(url: str, page: Page | None = None) -> str:
+def detect_portal_type(url: str, page: Page | None = None) -> str | None:
     """Detect portal type from URL pattern and optionally DOM."""
     url_lower = url.lower()
 
@@ -40,10 +40,10 @@ def detect_portal_type(url: str, page: Page | None = None) -> str:
     # Stage 2: DOM fingerprint (if page is provided)
     if page:
         # This would require loading the page first
-        # For now, return "unknown"
+        # For now, return None and let the caller route to manual review.
         pass
 
-    return "unknown"
+    return None
 
 
 async def fill_workday(

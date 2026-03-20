@@ -5,9 +5,9 @@ from typing import TypedDict
 
 from langchain_openrouter import ChatOpenRouter
 
-from envoy import config
-from envoy.nodes.filter import GraphState
-from envoy.profile import retriever
+from hiremeAI import config
+from hiremeAI.nodes.filter import GraphState
+from hiremeAI.profile import retriever
 
 
 def get_llm():

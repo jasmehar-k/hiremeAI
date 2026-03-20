@@ -5,9 +5,9 @@ from typing import TypedDict
 
 from langchain_openrouter import ChatOpenRouter
 
-from envoy import config
-from envoy.profile import retriever
-from envoy import tracker
+from hiremeAI import config
+from hiremeAI.profile import retriever
+from hiremeAI import tracker
 
 
 class GraphState(TypedDict):

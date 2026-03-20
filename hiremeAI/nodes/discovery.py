@@ -27,6 +27,8 @@ def detect_portal_type(url: str) -> str | None:
         "greenhouse": ["greenhouse.io", "boards.greenhouse.io"],
         "lever": ["jobs.lever.co", "lever.co/"],
         "handshake": ["joinhandshake.com", "app.joinhandshake.com"],
+        "linkedin": ["linkedin.com/jobs"],
+        "indeed": ["indeed.com/viewjob", "smartapply.indeed.com"],
     }.items():
         if any(pattern in url_lower for pattern in patterns):
             return portal
@@ -100,7 +102,7 @@ async def discover_all() -> list[JobListing]:
     Returns:
         List of unique job listings, filtered to exclude already-applied URLs.
     """
-    from envoy import tracker
+    from hiremeAI import tracker
 
     # Run all scrapers concurrently
     results = await asyncio.gather(

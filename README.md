@@ -41,7 +41,7 @@ Autonomous internship/co-op application agent. Discovers job listings, scores fi
 
 5. **Load profile into ChromaDB**:
    ```bash
-   python -m envoy.profile.loader
+   python -m hiremeAI.profile.loader
    ```
 
 ## Usage
@@ -49,7 +49,7 @@ Autonomous internship/co-op application agent. Discovers job listings, scores fi
 ### Run one application cycle
 
 ```bash
-python -m envoy.graph
+python -m hiremeAI.graph
 ```
 
 This will:
@@ -61,20 +61,20 @@ This will:
 ### Start scheduler for daily runs
 
 ```bash
-python -m envoy.scheduler
+python -m hiremeAI.scheduler
 ```
 
-The scheduler runs daily at 8:00 AM (configurable in `envoy/config.py`).
+The scheduler runs daily at 8:00 AM (configurable in `hiremeAI/config.py`).
 
 ### View application history
 
 ```bash
-sqlite3 envoy.db "SELECT company, title, status, fit_score, applied_at FROM applications ORDER BY created_at DESC;"
+sqlite3 hireme.db "SELECT company, title, status, fit_score, applied_at FROM applications ORDER BY created_at DESC;"
 ```
 
 ## Configuration
 
-Key settings in `envoy/config.py`:
+Key settings in `hiremeAI/config.py`:
 
 - `FIT_THRESHOLD` (0.65): Minimum fit score to proceed with application
 - `MAX_CONCURRENT_APPLICATIONS` (3): Max parallel application attempts
@@ -98,8 +98,8 @@ pytest
 ## Project Structure
 
 ```
-envoy/
-├── envoy/
+hiremeAI/
+├── hiremeAI/
 │   ├── graph.py           # LangGraph pipeline
 │   ├── scheduler.py       # APScheduler daily trigger
 │   ├── tracker.py        # SQLite logging

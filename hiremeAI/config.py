@@ -1,7 +1,9 @@
-"""Configuration and constants for envoy."""
+"""Configuration and constants for hireme."""
 
 import os
+import shutil
 from pathlib import Path
+
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -18,9 +20,30 @@ TEMPLATES_DIR = ROOT_DIR / "templates"
 
 # ChromaDB
 CHROMA_PERSIST_DIR = ROOT_DIR / ".chroma"
+PROFILE_COLLECTION_NAME = "hireme_profile"
+LEGACY_PROFILE_COLLECTION_NAME = "envoy_profile"
 
 # SQLite database
-DB_PATH = ROOT_DIR / "envoy.db"
+LEGACY_DB_PATH = ROOT_DIR / "envoy.db"
+CANONICAL_DB_PATH = ROOT_DIR / "hireme.db"
+
+
+def resolve_db_path() -> Path:
+    """Resolve the active database path while preserving legacy local data."""
+    if CANONICAL_DB_PATH.exists():
+        return CANONICAL_DB_PATH
+
+    if LEGACY_DB_PATH.exists():
+        try:
+            shutil.copy2(LEGACY_DB_PATH, CANONICAL_DB_PATH)
+            return CANONICAL_DB_PATH
+        except OSError:
+            return LEGACY_DB_PATH
+
+    return CANONICAL_DB_PATH
+
+
+DB_PATH = resolve_db_path()
 
 # LLM Configuration
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "")

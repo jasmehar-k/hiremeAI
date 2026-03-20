@@ -6,7 +6,7 @@ from pathlib import Path
 import chromadb
 from chromadb.config import Settings
 
-from envoy import config
+from hiremeAI import config
 
 
 def get_client() -> chromadb.PersistentClient:
@@ -17,11 +17,46 @@ def get_client() -> chromadb.PersistentClient:
     )
 
 
+def _collection_exists(client: chromadb.PersistentClient, name: str) -> bool:
+    """Return whether the named collection exists for this client."""
+    try:
+        collections = client.list_collections()
+    except Exception:
+        return False
+
+    for collection in collections:
+        collection_name = getattr(collection, "name", collection)
+        if collection_name == name:
+            return True
+    return False
+
+
+def _migrate_legacy_collection(client: chromadb.PersistentClient) -> None:
+    """Copy legacy profile data into the canonical collection if needed."""
+    if not _collection_exists(client, config.LEGACY_PROFILE_COLLECTION_NAME):
+        return
+
+    canonical = client.get_or_create_collection(
+        name=config.PROFILE_COLLECTION_NAME,
+        metadata={"description": "User profile for job applications"},
+    )
+    legacy = client.get_collection(config.LEGACY_PROFILE_COLLECTION_NAME)
+
+    payload = legacy.get(include=["documents", "metadatas"])
+    ids = payload.get("ids", [])
+    documents = payload.get("documents", [])
+    metadatas = payload.get("metadatas", [])
+
+    if ids:
+        canonical.upsert(ids=ids, documents=documents, metadatas=metadatas)
+
+
 def get_collection():
-    """Get or create the profile collection."""
+    """Get or create the canonical profile collection, migrating legacy data if needed."""
     client = get_client()
+    _migrate_legacy_collection(client)
     return client.get_or_create_collection(
-        name="envoy_profile",
+        name=config.PROFILE_COLLECTION_NAME,
         metadata={"description": "User profile for job applications"},
     )
 
@@ -117,7 +152,9 @@ def load_profile() -> None:
 def clear_profile() -> None:
     """Clear all profile data from ChromaDB."""
     client = get_client()
-    client.delete_collection("envoy_profile")
+    for name in (config.PROFILE_COLLECTION_NAME, config.LEGACY_PROFILE_COLLECTION_NAME):
+        if _collection_exists(client, name):
+            client.delete_collection(name)
     print("Cleared profile from ChromaDB")
 
 

@@ -1,7 +1,7 @@
 """Profile retriever - RAG queries over ChromaDB profile store."""
 
-from envoy.profile.loader import get_collection
-from envoy import config
+from hiremeAI.profile.loader import get_collection
+from hiremeAI import config
 
 
 def retrieve(

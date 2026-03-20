@@ -1,4 +1,4 @@
-## envoy — autonomous job application agent
+## hireme — autonomous job application agent
 **Date:** 2025
 **Stack:** Python, LangGraph, Playwright, ChromaDB, Claude API
 

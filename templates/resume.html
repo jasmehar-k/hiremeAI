@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume - {{ name }}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            font-size: 11pt;
+            line-height: 1.4;
+            color: #333;
+            max-width: 8.5in;
+            margin: 0 auto;
+            padding: 0.5in;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #333;
+            padding-bottom: 15px;
+        }
+
+        .name {
+            font-size: 24pt;
+            font-weight: 700;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+        }
+
+        .contact {
+            font-size: 10pt;
+            color: #555;
+        }
+
+        .contact span {
+            margin: 0 8px;
+        }
+
+        .summary {
+            font-size: 10pt;
+            margin-bottom: 20px;
+            text-align: justify;
+        }
+
+        .section {
+            margin-bottom: 18px;
+        }
+
+        .section-title {
+            font-size: 12pt;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 4px;
+            margin-bottom: 12px;
+        }
+
+        .entry {
+            margin-bottom: 12px;
+        }
+
+        .entry-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 4px;
+        }
+
+        .entry-title {
+            font-weight: 700;
+            font-size: 11pt;
+        }
+
+        .entry-meta {
+            font-size: 10pt;
+            color: #555;
+        }
+
+        .entry-subtitle {
+            font-size: 10pt;
+            color: #444;
+            font-style: italic;
+            margin-bottom: 4px;
+        }
+
+        .entry-highlights {
+            font-size: 10pt;
+            padding-left: 18px;
+            list-style-type: disc;
+        }
+
+        .entry-highlights li {
+            margin-bottom: 3px;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 20px;
+        }
+
+        .skill-category {
+            font-size: 10pt;
+        }
+
+        .skill-category strong {
+            font-weight: 700;
+        }
+
+        .education-entry {
+            margin-bottom: 10px;
+        }
+
+        .education-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+
+        .education-degree {
+            font-weight: 700;
+            font-size: 11pt;
+        }
+
+        .education-institution {
+            font-size: 10pt;
+        }
+
+        @media print {
+            body {
+                padding: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="name">{{ name }}</div>
+        <div class="contact">
+            {% if contact.email %}<span>{{ contact.email }}</span>{% endif %}
+            {% if contact.phone %}<span>{{ contact.phone }}</span>{% endif %}
+            {% if contact.location %}<span>{{ contact.location }}</span>{% endif %}
+        </div>
+    </div>
+
+    {% if summary %}
+    <div class="summary">
+        {{ summary }}
+    </div>
+    {% endif %}
+
+    {% if experience %}
+    <div class="section">
+        <div class="section-title">Experience</div>
+        {% for job in experience %}
+        <div class="entry">
+            <div class="entry-header">
+                <span class="entry-title">{{ job.title }}</span>
+                <span class="entry-meta">{{ job.dates }}</span>
+            </div>
+            <div class="entry-subtitle">
+                {% if job.company %}{{ job.company }}{% endif %}
+                {% if job.location %} — {{ job.location }}{% endif %}
+            </div>
+            {% if job.highlights %}
+            <ul class="entry-highlights">
+                {% for highlight in job.highlights %}
+                <li>{{ highlight }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if projects %}
+    <div class="section">
+        <div class="section-title">Projects</div>
+        {% for project in projects %}
+        <div class="entry">
+            <div class="entry-header">
+                <span class="entry-title">{{ project.name }}</span>
+                <span class="entry-meta">{{ project.dates }}</span>
+            </div>
+            {% if project.technologies %}
+            <div class="entry-subtitle">{{ project.technologies | join(', ') }}</div>
+            {% endif %}
+            {% if project.description %}
+            <div style="font-size: 10pt; margin-bottom: 4px;">{{ project.description }}</div>
+            {% endif %}
+            {% if project.highlights %}
+            <ul class="entry-highlights">
+                {% for highlight in project.highlights %}
+                <li>{{ highlight }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if education %}
+    <div class="section">
+        <div class="section-title">Education</div>
+        {% for edu in education %}
+        <div class="education-entry">
+            <div class="education-header">
+                <span class="education-degree">{{ edu.degree }}</span>
+                <span class="entry-meta">{{ edu.dates }}</span>
+            </div>
+            <div class="entry-subtitle">
+                {{ edu.institution }}
+                {% if edu.details %}— {{ edu.details | join(', ') }}{% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if skills %}
+    <div class="section">
+        <div class="section-title">Skills</div>
+        <div class="skills-grid">
+            {% if skills.languages %}
+            <div class="skill-category">
+                <strong>Languages:</strong> {{ skills.languages | join(', ') }}
+            </div>
+            {% endif %}
+            {% if skills.frameworks %}
+            <div class="skill-category">
+                <strong>Frameworks:</strong> {{ skills.frameworks | join(', ') }}
+            </div>
+            {% endif %}
+            {% if skills.tools %}
+            <div class="skill-category">
+                <strong>Tools:</strong> {{ skills.tools | join(', ') }}
+            </div>
+            {% endif %}
+            {% if skills.soft %}
+            <div class="skill-category">
+                <strong>Soft Skills:</strong> {{ skills.soft | join(', ') }}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+</body>
+</html>

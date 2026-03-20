@@ -5,17 +5,17 @@ from typing import TypedDict
 
 from langgraph.graph import StateGraph, END
 
-from envoy import config
-from envoy.nodes.filter import GraphState, filter_node
-from envoy.nodes.generation import (
+from hiremeAI import config
+from hiremeAI.nodes.filter import GraphState, filter_node
+from hiremeAI.nodes.generation import (
     resume_writer_node,
     cover_letter_writer_node,
     qa_answerer_node,
 )
-from envoy.nodes.renderer import renderer_node
-from envoy.nodes.applicator import applicator_node
-from envoy.nodes import discovery
-from envoy import tracker
+from hiremeAI.nodes.renderer import renderer_node
+from hiremeAI.nodes.applicator import applicator_node
+from hiremeAI.nodes import discovery
+from hiremeAI import tracker
 
 
 def create_graph() -> StateGraph:
