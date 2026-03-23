@@ -70,6 +70,22 @@ PLAYWRIGHT_USER_AGENT = (
 # Discovery configuration
 DISCOVERY_PLATFORMS = ["handshake", "linkedin", "indeed", "portal"]
 
+# LinkedIn job search URL (personalized search URL from your LinkedIn)
+LINKEDIN_SEARCH_URL = os.getenv("LINKEDIN_SEARCH_URL", "")
+
+# Career page URLs to scrape (comma-separated in .env or list here)
+# Supports generic career pages and ATS portals (Lever, Greenhouse, Workday)
+CAREER_PAGE_URLS = [
+    url.strip() for url in os.getenv("CAREER_PAGE_URLS", "").split(",") if url.strip()
+]
+
+# Request delays to avoid rate limiting
+REQUEST_DELAY_MIN = 1.0
+REQUEST_DELAY_MAX = 3.0
+
+# LinkedIn configuration
+LINKEDIN_SEARCH_URL = os.getenv("LINKEDIN_SEARCH_URL", "")
+
 # Portal URL patterns for detection
 PORTAL_URL_PATTERNS = {
     "workday": ["myworkdayjobs.com", "wd1.myworkdayjobs", "wd3.myworkdayjobs"],
