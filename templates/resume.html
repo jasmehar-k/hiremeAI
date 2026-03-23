@@ -14,110 +14,104 @@
         body {
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
             font-size: 11pt;
-            line-height: 1.4;
-            color: #333;
+            line-height: 1.3;
+            color: #000;
             max-width: 8.5in;
             margin: 0 auto;
             padding: 0.5in;
         }
 
+        /* Header - centered with scshape-style font */
         .header {
             text-align: center;
             margin-bottom: 20px;
-            border-bottom: 2px solid #333;
-            padding-bottom: 15px;
         }
 
         .name {
             font-size: 24pt;
-            font-weight: 700;
-            margin-bottom: 5px;
+            font-weight: bold;
             letter-spacing: 1px;
+            margin-bottom: 6px;
         }
 
         .contact {
             font-size: 10pt;
-            color: #555;
+            color: #000;
         }
 
         .contact span {
-            margin: 0 8px;
+            margin: 0 4px;
         }
 
-        .summary {
-            font-size: 10pt;
-            margin-bottom: 20px;
-            text-align: justify;
+        .contact a {
+            color: #000;
+            text-decoration: underline;
         }
 
+        /* Section titles - left-aligned with underline */
         .section {
-            margin-bottom: 18px;
+            margin-bottom: 16px;
         }
 
         .section-title {
             font-size: 12pt;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            border-bottom: 1px solid #333;
-            padding-bottom: 4px;
-            margin-bottom: 12px;
+            font-weight: bold;
+            margin-bottom: 6px;
+            padding-bottom: 2px;
+            border-bottom: 1px solid #000;
         }
 
+        /* Entry layouts - two column */
         .entry {
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
 
         .entry-header {
             display: flex;
             justify-content: space-between;
             align-items: baseline;
-            margin-bottom: 4px;
         }
 
         .entry-title {
-            font-weight: 700;
+            font-weight: bold;
             font-size: 11pt;
         }
 
         .entry-meta {
             font-size: 10pt;
-            color: #555;
+            color: #333;
         }
 
         .entry-subtitle {
             font-size: 10pt;
-            color: #444;
+            color: #333;
             font-style: italic;
+            margin-top: 1px;
             margin-bottom: 4px;
         }
 
+        .entry-subtitle-location {
+            font-size: 10pt;
+            color: #333;
+            margin-top: 1px;
+            margin-bottom: 4px;
+        }
+
+        /* Small bullet points */
         .entry-highlights {
             font-size: 10pt;
-            padding-left: 18px;
-            list-style-type: disc;
+            padding-left: 16px;
+            margin-top: 2px;
+            list-style-type: circle;
         }
 
         .entry-highlights li {
-            margin-bottom: 3px;
+            margin-bottom: 2px;
         }
 
-        .skills-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 8px 20px;
-        }
-
-        .skill-category {
-            font-size: 10pt;
-        }
-
-        .skill-category strong {
-            font-weight: 700;
-        }
-
+        /* Education entries */
         .education-entry {
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         .education-header {
@@ -127,12 +121,29 @@
         }
 
         .education-degree {
-            font-weight: 700;
+            font-weight: bold;
             font-size: 11pt;
         }
 
         .education-institution {
             font-size: 10pt;
+            color: #333;
+            font-style: italic;
+            margin-top: 1px;
+        }
+
+        /* Technical Skills - single line format */
+        .skills-list {
+            font-size: 10pt;
+            line-height: 1.6;
+        }
+
+        .skill-category {
+            display: inline;
+        }
+
+        .skill-category strong {
+            font-weight: bold;
         }
 
         @media print {
@@ -143,21 +154,46 @@
     </style>
 </head>
 <body>
+    <!-- Header -->
     <div class="header">
         <div class="name">{{ name }}</div>
         <div class="contact">
-            {% if contact.email %}<span>{{ contact.email }}</span>{% endif %}
-            {% if contact.phone %}<span>{{ contact.phone }}</span>{% endif %}
-            {% if contact.location %}<span>{{ contact.location }}</span>{% endif %}
+            {% if contact.phone %}{{ contact.phone }}{% endif %}
+            {% if contact.phone and contact.email %} | {% endif %}
+            {% if contact.email %}<a href="mailto:{{ contact.email }}">{{ contact.email }}</a>{% endif %}
+            {% if (contact.phone or contact.email) and contact.linkedin %} | {% endif %}
+            {% if contact.linkedin %}<a href="{{ contact.linkedin }}">linkedin.com/in/{{ contact.linkedin | replace('https://linkedin.com/in/', '') }}</a>{% endif %}
+            {% if (contact.phone or contact.email or contact.linkedin) and contact.github %} | {% endif %}
+            {% if contact.github %}<a href="{{ contact.github }}">github.com/{{ contact.github | replace('https://github.com/', '') }}</a>{% endif %}
         </div>
     </div>
 
     {% if summary %}
-    <div class="summary">
-        {{ summary }}
+    <div class="section">
+        <div class="entry-subtitle" style="margin-bottom: 12px;">{{ summary }}</div>
     </div>
     {% endif %}
 
+    <!-- Education - First section -->
+    {% if education %}
+    <div class="section">
+        <div class="section-title">Education</div>
+        {% for edu in education %}
+        <div class="education-entry">
+            <div class="education-header">
+                <span class="education-degree">{{ edu.degree }}</span>
+                <span class="entry-meta">{{ edu.dates }}</span>
+            </div>
+            <div class="education-institution">
+                {{ edu.institution }}
+                {% if edu.details %} — {{ edu.details | join(', ') }}{% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Experience - Second section -->
     {% if experience %}
     <div class="section">
         <div class="section-title">Experience</div>
@@ -167,7 +203,7 @@
                 <span class="entry-title">{{ job.title }}</span>
                 <span class="entry-meta">{{ job.dates }}</span>
             </div>
-            <div class="entry-subtitle">
+            <div class="entry-subtitle-location">
                 {% if job.company %}{{ job.company }}{% endif %}
                 {% if job.location %} — {{ job.location }}{% endif %}
             </div>
@@ -183,6 +219,7 @@
     </div>
     {% endif %}
 
+    <!-- Projects - Third section -->
     {% if projects %}
     <div class="section">
         <div class="section-title">Projects</div>
@@ -210,48 +247,15 @@
     </div>
     {% endif %}
 
-    {% if education %}
-    <div class="section">
-        <div class="section-title">Education</div>
-        {% for edu in education %}
-        <div class="education-entry">
-            <div class="education-header">
-                <span class="education-degree">{{ edu.degree }}</span>
-                <span class="entry-meta">{{ edu.dates }}</span>
-            </div>
-            <div class="entry-subtitle">
-                {{ edu.institution }}
-                {% if edu.details %}— {{ edu.details | join(', ') }}{% endif %}
-            </div>
-        </div>
-        {% endfor %}
-    </div>
-    {% endif %}
-
+    <!-- Technical Skills - Last section -->
     {% if skills %}
     <div class="section">
-        <div class="section-title">Skills</div>
-        <div class="skills-grid">
-            {% if skills.languages %}
-            <div class="skill-category">
-                <strong>Languages:</strong> {{ skills.languages | join(', ') }}
-            </div>
-            {% endif %}
-            {% if skills.frameworks %}
-            <div class="skill-category">
-                <strong>Frameworks:</strong> {{ skills.frameworks | join(', ') }}
-            </div>
-            {% endif %}
-            {% if skills.tools %}
-            <div class="skill-category">
-                <strong>Tools:</strong> {{ skills.tools | join(', ') }}
-            </div>
-            {% endif %}
-            {% if skills.soft %}
-            <div class="skill-category">
-                <strong>Soft Skills:</strong> {{ skills.soft | join(', ') }}
-            </div>
-            {% endif %}
+        <div class="section-title">Technical Skills</div>
+        <div class="skills-list">
+            {% if skills.languages %}<span class="skill-category"><strong>Languages:</strong> {{ skills.languages | join(', ') }}</span>{% endif %}
+            {% if skills.frameworks %}{% if skills.languages %} | {% endif %}<span class="skill-category"><strong>Frameworks:</strong> {{ skills.frameworks | join(', ') }}</span>{% endif %}
+            {% if skills.tools %}{% if skills.languages or skills.frameworks %} | {% endif %}<span class="skill-category"><strong>Developer Tools:</strong> {{ skills.tools | join(', ') }}</span>{% endif %}
+            {% if skills.libraries %}{% if skills.languages or skills.frameworks or skills.tools %} | {% endif %}<span class="skill-category"><strong>Libraries:</strong> {{ skills.libraries | join(', ') }}</span>{% endif %}
         </div>
     </div>
     {% endif %}
